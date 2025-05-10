@@ -57,7 +57,7 @@ export default function App() {
       {images.length > 0 && <ImageGallery images={images} />}
       {isLoading && <Loader isOverlay={false} />}
       {images.length > 0 && !isLoading && (
-        <LoadMoreBtn onClick={handleLoadMore} />
+        <LoadMoreBtn onClick={handleLoadMore} disabled={isLoading} />
       )}
     </div>
   );
