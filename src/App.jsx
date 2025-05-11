@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { fetchImages } from "../apiKey";
+import { fetchImages } from "../api";
 import toast from "react-hot-toast";
 import SearchBar from "./components/SearchBar/SearchBar";
 import ImageGallery from "./components/ImageGallery/ImageGallery";
