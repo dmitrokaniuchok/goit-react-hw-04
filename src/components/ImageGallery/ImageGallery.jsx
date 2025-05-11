@@ -1,7 +1,7 @@
 import ImageCard from "./ImageCard.jsx";
 import styles from "./ImageGallery.module.css";
 
-export default function Imagegallery({ images, onImageClick }) {
+export default function Imagegallery({ images, openModal }) {
   return (
     <ul className={styles.containerList}>
       {images.map((image) => {
@@ -10,7 +10,7 @@ export default function Imagegallery({ images, onImageClick }) {
             <ImageCard
               src={image.urls.small}
               alt={image.description}
-              onClick={() => onImageClick(image)}
+              onClick={() => openModal(image.urls.regular)}
             />
           </li>
         );

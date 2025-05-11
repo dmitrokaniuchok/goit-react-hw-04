@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
-import { fetchImages } from "./components/api";
+import { fetchImages } from "../apiKey";
 import toast from "react-hot-toast";
 import SearchBar from "./components/SearchBar/SearchBar";
 import ImageGallery from "./components/ImageGallery/ImageGallery";
 import Loader from "./components/Loader/Loader";
 import LoadMoreBtn from "./components/LoadMoreBtn/LoadMoreBtn";
+import ErrorMessage from "./components/ErrorMessage/ErrorMessage";
+import ImageModal from "./components/ImageModal/ImageModal";
 
 export default function App() {
   const [images, setImages] = useState([]);
@@ -12,11 +14,25 @@ export default function App() {
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(1);
+  const [hasError, setHasError] = useState(false);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState("");
+
+  const openModal = (imageUrl) => {
+    setSelectedImage(imageUrl);
+    setModalIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalIsOpen(false);
+  };
 
   useEffect(() => {
     if (!query) return;
 
     setIsLoading(true);
+    setHasError(false);
+
     fetchImages(query, page)
       .then((data) => {
         if (data.results.length === 0 && page === 1) {
@@ -27,7 +43,7 @@ export default function App() {
       })
       .catch(() => {
         setIsLoading(false);
-        toast.error("Failed to load images.");
+        setHasError(true);
       });
   }, [query, page]);
 
@@ -41,6 +57,7 @@ export default function App() {
     setImages([]);
     setPage(1);
     setInputValue("");
+    setHasError(false);
   };
 
   const handleLoadMore = () => {
@@ -54,11 +71,26 @@ export default function App() {
         onChange={(event) => setInputValue(event.target.value)}
         onSubmit={handleSubmit}
       />
-      {images.length > 0 && <ImageGallery images={images} />}
+
+      {hasError && (
+        <ErrorMessage message="Something went wrong! Try refreshing the page!" />
+      )}
+
+      {images.length > 0 && !hasError && (
+        <ImageGallery images={images} openModal={openModal} />
+      )}
+
       {isLoading && <Loader isOverlay={false} />}
-      {images.length > 0 && !isLoading && (
+
+      {images.length > 0 && !isLoading && !hasError && (
         <LoadMoreBtn onClick={handleLoadMore} disabled={isLoading} />
       )}
+
+      <ImageModal
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        imageUrl={selectedImage}
+      />
     </div>
   );
 }

@@ -7,6 +7,7 @@
 
 .containerItem {
   overflow: hidden;
+  cursor: pointer;
 }
 
 .containerItem img {
